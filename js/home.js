@@ -2,11 +2,17 @@ const API_KEY = 'ff92f7f3c703f962c7ef5f13285067c3';
 const IMG_PATH = 'https://image.tmdb.org/t/p/w1280';
 const BACKDROP_PATH = 'https://image.tmdb.org/t/p/original';
 
+// Global State
+let currentId = null;
+let currentType = null;
+let currentS = 1;
+let currentE = 1;
+let currentSrv = 1;
+
 const homeView = document.getElementById('home-view');
 const detailsView = document.getElementById('details-view');
 const movieGrid = document.getElementById('movie-grid');
-const searchForm = document.getElementById('search-form');
-const searchInput = document.getElementById('search-input');
+const iframe = document.getElementById('video-iframe');
 
 getMovies(`https://api.themoviedb.org/3/trending/all/day?api_key=${API_KEY}`);
 
@@ -33,6 +39,9 @@ async function showDetails(item) {
     detailsView.style.display = 'block';
     window.scrollTo(0, 0);
 
+    currentId = item.id;
+    currentType = item.media_type || (item.first_air_date ? 'tv' : 'movie');
+
     document.getElementById('details-backdrop').style.backgroundImage = `url(${BACKDROP_PATH + item.backdrop_path})`;
     document.getElementById('details-poster').src = IMG_PATH + item.poster_path;
     document.getElementById('details-title').innerText = item.title || item.name;
@@ -40,21 +49,46 @@ async function showDetails(item) {
     document.getElementById('details-rating').innerText = "★ " + (item.vote_average || 0).toFixed(1);
     document.getElementById('details-year').innerText = (item.release_date || item.first_air_date || "").split('-')[0];
 
-    const mediaType = item.media_type || (item.first_air_date ? 'tv' : 'movie');
     const playerContainer = document.getElementById('player-container');
     const tvControls = document.getElementById('tv-controls');
-    const iframe = document.getElementById('video-iframe');
+    const srvSwitcher = document.getElementById('server-switcher');
 
-    if (mediaType === 'tv') {
+    if (currentType === 'tv') {
         tvControls.style.display = 'block';
         playerContainer.style.display = 'none';
+        srvSwitcher.style.display = 'none';
         iframe.src = '';
-        loadSeasons(item.id);
+        loadSeasons(currentId);
     } else {
         tvControls.style.display = 'none';
         playerContainer.style.display = 'block';
-        iframe.src = `https://vidsrc.to/embed/movie/${item.id}`;
+        srvSwitcher.style.display = 'block';
+        updatePlayer();
     }
+}
+
+function changeServer(srvNum) {
+    currentSrv = srvNum;
+    document.querySelectorAll('.srv-btn').forEach((btn, index) => {
+        btn.classList.toggle('active', index + 1 === srvNum);
+    });
+    updatePlayer();
+}
+
+function updatePlayer() {
+    let url = "";
+    if (currentType === 'movie') {
+        if (currentSrv === 1) url = `https://vidsrc.to/embed/movie/${currentId}`;
+        if (currentSrv === 2) url = `https://vidsrc.xyz/embed/movie/${currentId}`;
+        if (currentSrv === 3) url = `https://vidsrc.me/embed/movie?tmdb=${currentId}`;
+    } else {
+        if (currentSrv === 1) url = `https://vidsrc.to/embed/tv/${currentId}/${currentS}/${currentE}`;
+        if (currentSrv === 2) url = `https://vidsrc.xyz/embed/tv/${currentId}/${currentS}/${currentE}`;
+        if (currentSrv === 3) url = `https://vidsrc.me/embed/tv?tmdb=${currentId}&sea=${currentS}&epi=${currentE}`;
+    }
+    iframe.src = url;
+    document.getElementById('player-container').style.display = 'block';
+    document.getElementById('server-switcher').style.display = 'block';
 }
 
 async function loadSeasons(tvId) {
@@ -70,6 +104,7 @@ async function loadSeasons(tvId) {
         btn.onclick = () => {
             document.querySelectorAll('.season-tab').forEach(t => t.classList.remove('active'));
             btn.classList.add('active');
+            currentS = s.season_number;
             loadEpisodes(tvId, s.season_number);
         };
         tabs.appendChild(btn);
@@ -87,25 +122,19 @@ async function loadEpisodes(tvId, sNum) {
         item.className = 'episode-item';
         item.innerHTML = `<strong>Eps ${e.episode_number}:</strong> ${e.name}`;
         item.onclick = () => {
-            const playerContainer = document.getElementById('player-container');
-            playerContainer.style.display = 'block';
-            document.getElementById('video-iframe').src = `https://vidsrc.to/embed/tv/${tvId}/${sNum}/${e.episode_number}`;
-            window.scrollTo(0, document.getElementById('player-container').offsetTop - 100);
+            currentE = e.episode_number;
+            updatePlayer();
+            scrollToPlayer();
         };
         list.appendChild(item);
     });
 }
 
-function showHome() {
-    homeView.style.display = 'block';
-    detailsView.style.display = 'none';
-    document.getElementById('video-iframe').src = '';
-}
+function showHome() { homeView.style.display = 'block'; detailsView.style.display = 'none'; iframe.src = ''; }
+function scrollToPlayer() { window.scrollTo({ top: document.getElementById('watch-section').offsetTop - 80, behavior: 'smooth' }); }
 
-searchForm.onsubmit = (e) => {
+document.getElementById('search-form').onsubmit = (e) => {
     e.preventDefault();
-    if (searchInput.value) {
-        getMovies(`https://api.themoviedb.org/3/search/multi?api_key=${API_KEY}&query=${searchInput.value}`);
-        showHome();
-    }
+    const val = document.getElementById('search-input').value;
+    if (val) { getMovies(`https://api.themoviedb.org/3/search/multi?api_key=${API_KEY}&query=${val}`); showHome(); }
 };

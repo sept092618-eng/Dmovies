@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dmovies - Watch Free Movies & TV Shows</title>
+    <title>Dmovies - Watch Free Movies & TV Shows Online</title>
     <link rel="stylesheet" href="css/home.css">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,400;0,700;0,900;1,400&display=swap" rel="stylesheet">
 </head>
@@ -20,10 +20,11 @@
         </nav>
     </header>
 
-    <!-- VIEW 1: HOME PAGE -->
+    <!-- VIEW 1: HOME PAGE (Grid of Movies) -->
     <div id="home-view">
         <section class="hero">
             <h1>Watch Free Movies Online</h1>
+            <p>Explore thousands of titles at your fingertips.</p>
             <form id="search-form">
                 <input type="text" id="search-input" placeholder="Enter keywords..." autocomplete="off">
                 <button type="submit">SEARCH</button>
@@ -32,7 +33,7 @@
         <main id="movie-grid" class="container"></main>
     </div>
 
-    <!-- VIEW 2: DETAILS PAGE (Gaya ng Bogge.tv) -->
+    <!-- VIEW 2: DETAILS PAGE (Bogge.tv Style) -->
     <div id="details-view" style="display:none;">
         <div id="details-backdrop" class="backdrop">
             <div class="backdrop-overlay">
@@ -53,13 +54,24 @@
             </div>
         </div>
 
-        <!-- PLAYER AREA & EPISODES -->
-        <div class="watch-section container">
+        <!-- WATCH SECTION (Player & Servers) -->
+        <div id="watch-section" class="watch-section container">
             <div id="player-container" class="player-wrapper" style="display:none;">
                 <iframe id="video-iframe" src="" frameborder="0" allowfullscreen></iframe>
             </div>
 
+            <div id="server-switcher" class="server-switcher" style="display:none;">
+                <p>If current server is slow or has too many ads, try others below:</p>
+                <div class="server-list">
+                    <button class="srv-btn active" onclick="changeServer(1)">Server 1</button>
+                    <button class="srv-btn" onclick="changeServer(2)">Server 2</button>
+                    <button class="srv-btn" onclick="changeServer(3)">Server 3</button>
+                </div>
+            </div>
+
+            <!-- EPISODE LIST AREA -->
             <div id="tv-controls" style="display:none;">
+                <h3 style="margin-bottom:15px; color:#a6d5bf;">Seasons & Episodes</h3>
                 <div class="season-tabs" id="season-tabs"></div>
                 <div class="episode-list" id="episode-list"></div>
             </div>
@@ -67,7 +79,8 @@
     </div>
 
     <footer>
-        <p>&copy; 2024 Dmovie. Powered by TMDB API.</p>
+        <p>&copy; 2024 Dmovie. All rights reserved.</p>
+        <p style="font-size: 10px; margin-top: 5px; color: #444;">Powered by TMDB API</p>
     </footer>
 
     <script src="js/home.js"></script>
