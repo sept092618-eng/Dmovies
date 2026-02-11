@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dmovie - Watch Free Movies & TV Shows Online</title>
+    
+    <link rel="stylesheet" href="css/home.css">
+    
+    <!-- Gagamit tayo ng Montserrat dahil malapit ito sa SF Pro style -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,700;0,900;1,400&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <header>
+        <!-- Branding: D (Bold/Green) + movies (Italic/Grey) -->
+        <div class="logo">D<span>movies</span></div>
+        <nav>
+            <ul>
+                <li><a href="#">Home</a></li>
+                <li><a href="#">Movies</a></li>
+                <li><a href="#">TV Shows</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <section class="hero">
+        <h1>Watch Free Movies Online</h1>
+        <p>Explore thousands of titles at your fingertips.</p>
+        
+        <form id="search-form">
+            <input type="text" id="search-input" placeholder="Enter keywords..." autocomplete="off">
+            <button type="submit">SEARCH</button>
+        </form>
+    </section>
+
+    <!-- Movie Grid Container -->
+    <main id="movie-grid" class="container"></main>
+
+    <footer>
+        <p>&copy; 2024 Dmovie. All rights reserved.</p>
+        <p style="font-size: 10px; margin-top: 5px; color: #444;">Powered by TMDB API</p>
+    </footer>
+
+    <script src="js/home.js"></script>
+</body>
+</html>
