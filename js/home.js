@@ -2,7 +2,6 @@ const API_KEY = 'ff92f7f3c703f962c7ef5f13285067c3';
 const IMG_PATH = 'https://image.tmdb.org/t/p/w1280';
 const BACKDROP_PATH = 'https://image.tmdb.org/t/p/original';
 
-// Global State
 let currentId = null;
 let currentType = null;
 let currentS = 1;
@@ -13,6 +12,7 @@ const homeView = document.getElementById('home-view');
 const detailsView = document.getElementById('details-view');
 const movieGrid = document.getElementById('movie-grid');
 const iframe = document.getElementById('video-iframe');
+const srvSwitcher = document.getElementById('server-switcher'); // Kunin natin ito agad
 
 getMovies(`https://api.themoviedb.org/3/trending/all/day?api_key=${API_KEY}`);
 
@@ -51,18 +51,18 @@ async function showDetails(item) {
 
     const playerContainer = document.getElementById('player-container');
     const tvControls = document.getElementById('tv-controls');
-    const srvSwitcher = document.getElementById('server-switcher');
+    
+    // GAWIN NATING Laging LALABAS ANG SERVER SWITCHER
+    srvSwitcher.style.display = 'block'; 
 
     if (currentType === 'tv') {
         tvControls.style.display = 'block';
         playerContainer.style.display = 'none';
-        srvSwitcher.style.display = 'none';
         iframe.src = '';
         loadSeasons(currentId);
     } else {
         tvControls.style.display = 'none';
         playerContainer.style.display = 'block';
-        srvSwitcher.style.display = 'block';
         updatePlayer();
     }
 }
@@ -88,7 +88,6 @@ function updatePlayer() {
     }
     iframe.src = url;
     document.getElementById('player-container').style.display = 'block';
-    document.getElementById('server-switcher').style.display = 'block';
 }
 
 async function loadSeasons(tvId) {
@@ -109,7 +108,7 @@ async function loadSeasons(tvId) {
         };
         tabs.appendChild(btn);
     });
-    tabs.firstChild.click();
+    if(tabs.firstChild) tabs.firstChild.click();
 }
 
 async function loadEpisodes(tvId, sNum) {
