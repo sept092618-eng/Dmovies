@@ -3,7 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- TITLE NG SITE MO -->
     <title>Dmovies - Watch Free Movies & TV Shows Online</title>
+
+    <!-- SEO / META TAGS (Number 1 na tinanong mo) -->
+    <meta name="description" content="Watch the latest movies and TV shows online for free in HD quality on Dmovies. No registration required.">
+    <meta name="keywords" content="movies, streaming, free cinema, Dmovies, watch tv shows online, the strain free">
+    <meta property="og:title" content="Dmovies - Your Home for Free Streaming">
+    <meta property="og:description" content="Stream thousands of movies and series for free.">
+    <meta property="og:image" content="https://image.tmdb.org/t/p/w500/or06vSfvSu12RCunqcq9p9fBsI.jpg">
+    <meta property="og:url" content="https://dmovies16.github.io/Watch-free-Dmovies/">
+
     <link rel="stylesheet" href="css/home.css">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,400;0,700;0,900;1,400&display=swap" rel="stylesheet">
 </head>
@@ -20,7 +31,6 @@
         </nav>
     </header>
 
-    <!-- VIEW 1: HOME PAGE (Grid of Movies) -->
     <div id="home-view">
         <section class="hero">
             <h1>Watch Free Movies Online</h1>
@@ -33,7 +43,6 @@
         <main id="movie-grid" class="container"></main>
     </div>
 
-    <!-- VIEW 2: DETAILS PAGE (Bogge.tv Style) -->
     <div id="details-view" style="display:none;">
         <div id="details-backdrop" class="backdrop">
             <div class="backdrop-overlay">
@@ -54,7 +63,6 @@
             </div>
         </div>
 
-        <!-- WATCH SECTION (Player & Servers) -->
         <div id="watch-section" class="watch-section container">
             <div id="player-container" class="player-wrapper" style="display:none;">
                 <iframe id="video-iframe" src="" frameborder="0" allowfullscreen></iframe>
@@ -69,7 +77,6 @@
                 </div>
             </div>
 
-            <!-- EPISODE LIST AREA -->
             <div id="tv-controls" style="display:none;">
                 <h3 style="margin-bottom:15px; color:#a6d5bf;">Seasons & Episodes</h3>
                 <div class="season-tabs" id="season-tabs"></div>
