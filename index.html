@@ -15,15 +15,16 @@
 <body>
 
     <header>
-        <div class="logo" style="cursor:pointer" onclick="location.reload()">
+        <div class="logo" style="cursor:pointer" onclick="loadHomepage()">
             <img src="DmoviesLogo.png" alt="Dmovies Logo">
         </div>
         <nav>
             <ul>
-                <li><a href="#" onclick="location.reload()">Home</a></li>
-                <li><a href="#">Genre</a></li>
-                <li><a href="#">Movies</a></li>
-                <li><a href="#">TV Shows</a></li>
+                <!-- DITO ANG UPDATE: Tinatawag na ang mga functions -->
+                <li><a href="#" onclick="loadHomepage()">Home</a></li>
+                <li><a href="#" onclick="loadGenres()">Genre</a></li>
+                <li><a href="#" onclick="loadMoviesPage()">Movies</a></li>
+                <li><a href="#" onclick="loadTVPage()">TV Shows</a></li>
             </ul>
         </nav>
     </header>
@@ -38,11 +39,13 @@
         </section>
         
         <main class="container">
+            <!-- Search / Genre Results Container -->
             <div id="search-results" style="display:none;">
                 <h2 class="section-title">Search Results</h2>
                 <div id="search-list" class="card-row-grid"></div>
             </div>
 
+            <!-- Homepage Sections -->
             <div id="homepage-content">
                 <section class="movie-section">
                     <h2 class="section-title">Trending Now</h2>
@@ -73,7 +76,6 @@
                         <div class="text-info">
                             <h2 id="details-title"></h2>
                             
-                            <!-- DITO LALABAS ANG RATING, YEAR AT RUNTIME -->
                             <div class="meta-data">
                                 <span id="details-rating"></span> • 
                                 <span id="details-year"></span> • 
@@ -114,7 +116,7 @@
         <p>&copy; 2024 Dmovies. Powered by TMDB.</p>
     </footer>
 
-    <!-- ADSTERRA SOCIAL BAR CODE (ITO YUNG ADS MO IDOL) -->
+    <!-- ADSTERRA SOCIAL BAR CODE -->
     <script src="https://pl28698254.effectivegatecpm.com/77/85/e3/7785e37cf5cfc06b7139a449d3a81235.js"></script>
 
     <script src="js/home.js"></script>

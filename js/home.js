@@ -1,55 +1,116 @@
 const API_KEY = 'ff92f7f3c703f962c7ef5f13285067c3';
-const IMG_PATH = 'https://image.tmdb.org/t/p/w500'; // Optimized size
+const IMG_PATH = 'https://image.tmdb.org/t/p/w500';
 const BACKDROP_PATH = 'https://image.tmdb.org/t/p/original';
 
+// STATE
 let currentId = null;
 let currentType = null;
 let currentS = 1;
 let currentE = 1;
 let currentSrv = 1;
 
+// ELEMENTS
 const homeView = document.getElementById('home-view');
 const detailsView = document.getElementById('details-view');
 const iframe = document.getElementById('video-iframe');
 const srvSwitcher = document.getElementById('server-switcher');
 const searchSection = document.getElementById('search-results');
 const homepageContent = document.getElementById('homepage-content');
+const searchList = document.getElementById('search-list');
 
 // --- INITIAL LOAD ---
 loadHomepage();
 
-async function loadHomepage() {
-    // Load Trending
-    fetch(`https://api.themoviedb.org/3/trending/all/day?api_key=${API_KEY}`)
-        .then(r => r.json())
-        .then(d => renderRow(d.results, 'trending-list'));
-
-    // Load Latest Movies
-    fetch(`https://api.themoviedb.org/3/discover/movie?api_key=${API_KEY}&sort_by=release_date.desc&vote_count.gte=50`)
-        .then(r => r.json())
-        .then(d => renderRow(d.results, 'latest-movies-list'));
-
-    // Load Latest TV
-    fetch(`https://api.themoviedb.org/3/discover/tv?api_key=${API_KEY}&sort_by=first_air_date.desc&vote_count.gte=20`)
-        .then(r => r.json())
-        .then(d => renderRow(d.results, 'latest-tv-list'));
+// --- NAVIGATION FUNCTIONS ---
+function loadHomepage() {
+    resetView();
+    homepageContent.style.display = 'block';
+    
+    // Load Sections
+    fetch(`https://api.themoviedb.org/3/trending/all/day?api_key=${API_KEY}`).then(r => r.json()).then(d => renderRow(d.results, 'trending-list'));
+    fetch(`https://api.themoviedb.org/3/discover/movie?api_key=${API_KEY}&sort_by=release_date.desc&vote_count.gte=50`).then(r => r.json()).then(d => renderRow(d.results, 'latest-movies-list'));
+    fetch(`https://api.themoviedb.org/3/discover/tv?api_key=${API_KEY}&sort_by=first_air_date.desc&vote_count.gte=20`).then(r => r.json()).then(d => renderRow(d.results, 'latest-tv-list'));
 }
 
-function renderRow(items, elementId) {
+// Function para sa "Movies" Link
+function loadMoviesPage() {
+    resetView();
+    searchSection.style.display = 'block';
+    document.querySelector('#search-results h2').innerText = "Popular Movies";
+    fetch(`https://api.themoviedb.org/3/discover/movie?api_key=${API_KEY}&sort_by=popularity.desc&page=1`)
+        .then(r => r.json())
+        .then(d => renderRow(d.results, 'search-list', true)); // true = grid view
+}
+
+// Function para sa "TV Shows" Link
+function loadTVPage() {
+    resetView();
+    searchSection.style.display = 'block';
+    document.querySelector('#search-results h2').innerText = "Popular TV Shows";
+    fetch(`https://api.themoviedb.org/3/discover/tv?api_key=${API_KEY}&sort_by=popularity.desc&page=1`)
+        .then(r => r.json())
+        .then(d => renderRow(d.results, 'search-list', true));
+}
+
+// Function para sa "Genre" Link
+function loadGenres() {
+    resetView();
+    searchSection.style.display = 'block';
+    const title = document.querySelector('#search-results h2');
+    title.innerText = "Select Genre";
+    
+    // Fetch Genres
+    fetch(`https://api.themoviedb.org/3/genre/movie/list?api_key=${API_KEY}`)
+        .then(r => r.json())
+        .then(data => {
+            searchList.innerHTML = '';
+            searchList.className = 'card-row-grid'; // Grid layout
+            
+            data.genres.forEach(g => {
+                const btn = document.createElement('button');
+                btn.innerText = g.name;
+                btn.className = 'srv-btn'; // Reuse server button style
+                btn.style.margin = '5px';
+                btn.onclick = () => loadGenreMovies(g.id, g.name);
+                searchList.appendChild(btn);
+            });
+        });
+}
+
+function loadGenreMovies(genreId, genreName) {
+    document.querySelector('#search-results h2').innerText = `${genreName} Movies`;
+    fetch(`https://api.themoviedb.org/3/discover/movie?api_key=${API_KEY}&with_genres=${genreId}`)
+        .then(r => r.json())
+        .then(d => renderRow(d.results, 'search-list', true));
+}
+
+// --- HELPER: Reset View ---
+function resetView() {
+    homeView.style.display = 'block';
+    detailsView.style.display = 'none';
+    homepageContent.style.display = 'none';
+    searchSection.style.display = 'none';
+    iframe.src = '';
+    window.scrollTo(0,0);
+}
+
+// --- RENDER CARD ---
+function renderRow(items, elementId, isGrid = false) {
     const container = document.getElementById(elementId);
     if (!container) return;
     container.innerHTML = '';
+    
+    if(isGrid) container.className = 'card-row-grid'; // Use grid CSS
 
     items.forEach(item => {
         if (!item.poster_path) return;
         const card = document.createElement('div');
         card.className = 'movie-card';
         
-        // Metadata Setup
         const year = (item.release_date || item.first_air_date || "N/A").split('-')[0];
         const mediaType = item.media_type || (item.first_air_date ? 'tv' : 'movie');
-        const typeLabel = mediaType === 'tv' ? 'TV Shows' : 'Movie';
-        const durationId = `dur-${item.id}`; // Unique ID for runtime update
+        const typeLabel = mediaType === 'tv' ? 'TV' : 'Movie';
+        const durationId = `dur-${item.id}`;
 
         card.innerHTML = `
             <img src="${IMG_PATH + item.poster_path}" loading="lazy" alt="${item.title}">
@@ -65,40 +126,22 @@ function renderRow(items, elementId) {
         
         card.onclick = () => showDetails(item);
         container.appendChild(card);
-
-        // BACKGROUND FETCH: Kuhanin ang minutes isa-isa
         fetchRuntime(item.id, mediaType, durationId);
     });
 }
 
-// Function para kuhanin ang minutes (runtime) nang hindi nagla-lag
-function fetchRuntime(id, type, spanId) {
-    // Kung TV, wag na kuhanin ang runtime para mabilis (ilagay na lang 'Series')
-    if(type === 'tv') {
-        setTimeout(() => {
-            const el = document.getElementById(spanId);
-            if(el) el.innerText = "Series";
-        }, 100);
-        return;
-    }
+// ... (KEEP ALL PREVIOUS FUNCTIONS: fetchRuntime, showDetails, updatePlayer, changeServer, loadSeasons, loadEpisodes) ...
+// NOTE: Dahil mahaba, kopyahin mo lang yung mga dating function sa baba nito. Pero para sigurado, heto ang buo:
 
-    // Kung Movie, fetch details
-    fetch(`https://api.themoviedb.org/3/movie/${id}?api_key=${API_KEY}`)
-        .then(r => r.json())
-        .then(d => {
-            const el = document.getElementById(spanId);
-            if(el && d.runtime) el.innerText = `${d.runtime}m`;
-            else if(el) el.innerText = "";
-        })
-        .catch(() => {});
+function fetchRuntime(id, type, spanId) {
+    if(type === 'tv') { setTimeout(() => { const el = document.getElementById(spanId); if(el) el.innerText = "Series"; }, 100); return; }
+    fetch(`https://api.themoviedb.org/3/movie/${id}?api_key=${API_KEY}`).then(r => r.json()).then(d => { const el = document.getElementById(spanId); if(el && d.runtime) el.innerText = `${d.runtime}m`; }).catch(() => {});
 }
 
-// --- DETAILS VIEW ---
 async function showDetails(item) {
     homeView.style.display = 'none';
     detailsView.style.display = 'block';
     window.scrollTo(0, 0);
-
     currentId = item.id;
     currentType = item.media_type || (item.first_air_date ? 'tv' : 'movie');
 
@@ -109,7 +152,6 @@ async function showDetails(item) {
     document.getElementById('details-rating').innerText = "★ " + (item.vote_average || 0).toFixed(1);
     document.getElementById('details-year').innerText = (item.release_date || item.first_air_date || "").split('-')[0];
     
-    // Fetch Runtime for Details Page
     const runtimeUrl = `https://api.themoviedb.org/3/${currentType}/${currentId}?api_key=${API_KEY}`;
     fetch(runtimeUrl).then(r => r.json()).then(details => {
         let duration = "";
@@ -131,7 +173,6 @@ async function showDetails(item) {
     }
 }
 
-// --- PLAYER LOGIC ---
 function updatePlayer() {
     let url = "";
     const params = "?auto_play=1&sub_f=1&ds_lang=en&sc_r=1&iv_load_policy=3"; 
@@ -148,45 +189,9 @@ function updatePlayer() {
     iframe.src = url;
 }
 
-function changeServer(n) {
-    currentSrv = n;
-    document.querySelectorAll('.srv-btn').forEach((b, i) => b.classList.toggle('active', i+1 === n));
-    updatePlayer();
-}
-
-async function loadSeasons(id) {
-    const d = await fetch(`https://api.themoviedb.org/3/tv/${id}?api_key=${API_KEY}`).then(r => r.json());
-    const t = document.getElementById('season-tabs');
-    t.innerHTML = '';
-    d.seasons.forEach(s => {
-        if (s.season_number === 0) return;
-        const b = document.createElement('div');
-        b.className = 'season-tab';
-        b.innerText = `Season ${s.season_number}`;
-        b.onclick = () => {
-            document.querySelectorAll('.season-tab').forEach(x => x.classList.remove('active'));
-            b.classList.add('active');
-            currentS = s.season_number;
-            loadEpisodes(id, s.season_number);
-        };
-        t.appendChild(b);
-    });
-    if(t.firstChild) t.firstChild.click();
-}
-
-async function loadEpisodes(id, s) {
-    const d = await fetch(`https://api.themoviedb.org/3/tv/${id}/season/${s}?api_key=${API_KEY}`).then(r => r.json());
-    const l = document.getElementById('episode-list');
-    l.innerHTML = '';
-    d.episodes.forEach(e => {
-        const i = document.createElement('div');
-        i.className = 'episode-item';
-        i.innerHTML = `<strong>Eps ${e.episode_number}:</strong> ${e.name}`;
-        i.onclick = () => { currentE = e.episode_number; updatePlayer(); scrollToPlayer(); };
-        l.appendChild(i);
-    });
-}
-
+function changeServer(n) { currentSrv = n; document.querySelectorAll('.srv-btn').forEach((b, i) => b.classList.toggle('active', i+1 === n)); updatePlayer(); }
+async function loadSeasons(id) { const d = await fetch(`https://api.themoviedb.org/3/tv/${id}?api_key=${API_KEY}`).then(r => r.json()); const t = document.getElementById('season-tabs'); t.innerHTML = ''; d.seasons.forEach(s => { if (s.season_number === 0) return; const b = document.createElement('div'); b.className = 'season-tab'; b.innerText = `Season ${s.season_number}`; b.onclick = () => { document.querySelectorAll('.season-tab').forEach(x => x.classList.remove('active')); b.classList.add('active'); currentS = s.season_number; loadEpisodes(id, s.season_number); }; t.appendChild(b); }); if(t.firstChild) t.firstChild.click(); }
+async function loadEpisodes(id, s) { const d = await fetch(`https://api.themoviedb.org/3/tv/${id}/season/${s}?api_key=${API_KEY}`).then(r => r.json()); const l = document.getElementById('episode-list'); l.innerHTML = ''; d.episodes.forEach(e => { const i = document.createElement('div'); i.className = 'episode-item'; i.innerHTML = `<strong>Eps ${e.episode_number}:</strong> ${e.name}`; i.onclick = () => { currentE = e.episode_number; updatePlayer(); scrollToPlayer(); }; l.appendChild(i); }); }
 function showHome() { homeView.style.display = 'block'; detailsView.style.display = 'none'; iframe.src = ''; }
 function scrollToPlayer() { const el = document.getElementById('watch-section'); if(el) window.scrollTo({ top: el.offsetTop - 60, behavior: 'smooth' }); }
 
@@ -197,6 +202,6 @@ document.getElementById('search-form').onsubmit = async (e) => {
     const d = await fetch(`https://api.themoviedb.org/3/search/multi?api_key=${API_KEY}&query=${val}`).then(r => r.json());
     homepageContent.style.display = 'none';
     searchSection.style.display = 'block';
-    renderRow(d.results, 'search-list');
-    document.getElementById('search-list').className = 'card-row-grid';
+    document.querySelector('#search-results h2').innerText = "Search Results";
+    renderRow(d.results, 'search-list', true);
 };
