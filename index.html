@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dmovies - Watch Free Movies & TV Shows Online</title>
+    <link rel="icon" type="image/png" href="DmoviesFavicon.png">
     <link rel="stylesheet" href="css/home.css">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,400;0,700;0,900;1,400&display=swap" rel="stylesheet">
 </head>
@@ -11,16 +12,14 @@
 
     <header>
         <div class="logo" style="cursor:pointer" onclick="location.reload()">
-            <img src="DmoviesLogo.png" alt="Dmovies Logo" style="height: 45px; vertical-align: middle;">
+            <img src="DmoviesLogo.png" alt="Dmovies Logo" style="height: 45px;">
         </div>
         <nav>
             <ul>
                 <li><a href="#" onclick="location.reload()">Home</a></li>
                 <li><a href="#">Genre</a></li>
-                <li><a href="#">Country</a></li>
                 <li><a href="#">Movies</a></li>
                 <li><a href="#">TV Shows</a></li>
-                <li><a href="#">Top IMDB</a></li>
             </ul>
         </nav>
     </header>
@@ -35,34 +34,39 @@
             </form>
         </section>
         
-        <!-- MOVIE SECTIONS -->
-        <main id="movie-grid" class="container">
-            <!-- Trending Section -->
-            <section class="movie-section">
-                <h2 class="section-title">Trending Now</h2>
-                <div id="trending-list" class="card-row"></div>
-            </section>
+        <main id="main-content" class="container">
+            <!-- Dito lalabas ang Search Results (Nakatago sa simula) -->
+            <div id="search-section" style="display:none; margin-bottom:50px;">
+                <h2 class="section-title">Search Results</h2>
+                <div id="search-list" class="card-row-grid"></div>
+            </div>
 
-            <!-- Latest Movies Section -->
-            <section class="movie-section">
-                <h2 class="section-title">Latest Movies</h2>
-                <div id="latest-movies-list" class="card-row"></div>
-            </section>
-            
-            <!-- Latest TV Shows Section -->
-            <section class="movie-section">
-                <h2 class="section-title">Latest TV Shows</h2>
-                <div id="latest-tv-list" class="card-row"></div>
-            </section>
+            <!-- Trending Section -->
+            <div id="homepage-sections">
+                <section class="movie-section">
+                    <h2 class="section-title">Trending Now</h2>
+                    <div id="trending-list" class="card-row"></div>
+                </section>
+
+                <section class="movie-section">
+                    <h2 class="section-title">Latest Movies</h2>
+                    <div id="latest-movies-list" class="card-row"></div>
+                </section>
+                
+                <section class="movie-section">
+                    <h2 class="section-title">Latest TV Shows</h2>
+                    <div id="latest-tv-list" class="card-row"></div>
+                </section>
+            </div>
         </main>
     </div>
 
-    <!-- VIEW 2: DETAILS PAGE (Same as before) -->
+    <!-- VIEW 2: DETAILS PAGE -->
     <div id="details-view" style="display:none;">
         <div id="details-backdrop" class="backdrop">
             <div class="backdrop-overlay">
                 <div class="details-content container">
-                    <button class="back-btn" onclick="showHome()">← Back to Home</button>
+                    <button class="back-btn" onclick="showHome()">← Back</button>
                     <div class="main-info">
                         <img id="details-poster" src="" alt="">
                         <div class="text-info">
@@ -101,13 +105,11 @@
     </div>
 
     <footer>
-        <p>&copy; 2024 Dmovies. All rights reserved.</p>
-        <p style="font-size: 10px; margin-top: 5px; color: #444;">Powered by TMDB API</p>
+        <p>&copy; 2024 Dmovies. Powered by TMDB API</p>
     </footer>
 
-    <!-- ADSTERRA SOCIAL BAR CODE -->
+    <!-- ADSTERRA -->
     <script src="https://pl28698254.effectivegatecpm.com/77/85/e3/7785e37cf5cfc06b7139a449d3a81235.js"></script>
-
     <script src="js/home.js"></script>
 </body>
 </html>

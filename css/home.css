@@ -1,290 +1,58 @@
-/* 1. GLOBAL RESET & BASE STYLES */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'Montserrat', sans-serif; background-color: #0c0c0c; color: white; line-height: 1.6; }
 
-body {
-    font-family: 'Montserrat', sans-serif;
-    background-color: #0c0c0c !important; /* Piliting maging itim ang background */
-    color: white;
-    line-height: 1.6;
-    overflow-x: hidden;
-}
+header { background-color: #000; padding: 15px 5%; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #222; position: sticky; top: 0; z-index: 100; }
+.logo img { height: 45px; }
+nav ul { display: flex; list-style: none; }
+nav ul li a { color: #ccc; text-decoration: none; margin-left: 20px; font-size: 14px; font-weight: bold; }
 
-/* 2. HEADER & LOGO */
-header {
-    background-color: #000;
-    padding: 15px 5%;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    border-bottom: 1px solid #222;
-    position: sticky;
-    top: 0;
-    z-index: 1000;
-}
+.container { max-width: 1400px; margin: 0 auto; padding: 0 20px; }
+.hero { text-align: center; padding: 60px 0; }
+.hero h1 { font-size: 36px; font-weight: 900; margin-bottom: 15px; }
+#search-form { display: flex; justify-content: center; max-width: 600px; margin: 0 auto; }
+#search-input { width: 100%; padding: 12px 20px; border-radius: 5px 0 0 5px; border: 1px solid #333; background: #1a1a1a; color: white; outline: none; }
+#search-form button { padding: 12px 30px; border-radius: 0 5px 5px 0; border: none; background: #616358; color: white; font-weight: bold; cursor: pointer; }
 
-.logo img {
-    height: 45px;
-    vertical-align: middle;
-}
+/* Horizontal Rows */
+.movie-section { margin-bottom: 40px; }
+.section-title { font-size: 20px; margin-left: 5%; margin-bottom: 15px; color: #a6d5bf; border-left: 5px solid #a6d5bf; padding-left: 10px; }
+.card-row { display: flex; overflow-x: auto; padding: 10px 5%; gap: 15px; }
+.card-row::-webkit-scrollbar { display: none; }
 
-nav ul {
-    display: flex;
-    list-style: none;
-}
+/* Grid for Search Results */
+.card-row-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 20px; padding: 0 5%; }
 
-nav ul li a {
-    color: #ccc;
-    text-decoration: none;
-    margin-left: 20px;
-    font-size: 14px;
-    font-weight: bold;
-    transition: 0.3s;
-}
+.movie-card { flex: 0 0 auto; width: 160px; background: #1a1a1a; border-radius: 10px; overflow: hidden; cursor: pointer; transition: 0.3s; }
+.movie-card img { width: 100%; height: 240px; object-fit: cover; display: block; }
+.movie-info { padding: 10px; text-align: center; font-size: 12px; }
 
-nav ul li a:hover {
-    color: #a6d5bf;
-}
+/* Details Page */
+.backdrop { width: 100%; height: 450px; background-size: cover; background-position: center; position: relative; }
+.backdrop-overlay { width: 100%; height: 100%; background: linear-gradient(to top, #0c0c0c, rgba(0,0,0,0.4)); display: flex; align-items: flex-end; padding-bottom: 40px; }
+.main-info { display: flex; gap: 30px; align-items: flex-start; }
+#details-poster { width: 180px; border-radius: 8px; }
+.text-info h2 { font-size: 32px; font-weight: 900; }
+.watch-now-btn { padding: 15px 30px; background: #a6d5bf; color: #000; font-weight: 900; border: none; border-radius: 5px; cursor: pointer; margin-top: 15px; }
 
-/* 3. HERO SECTION (SEARCH BAR) */
-.hero {
-    text-align: center;
-    padding: 60px 20px;
-    background: linear-gradient(to bottom, #111, #0c0c0c);
-}
+/* Player */
+.watch-section { padding: 40px 5%; border-top: 1px solid #222; }
+.player-wrapper { width: 100%; aspect-ratio: 16/9; background: #000; margin-bottom: 20px; }
+.player-wrapper iframe { width: 100%; height: 100%; }
+.server-list { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
+.srv-btn { background: #1a1a1a; color: #ccc; border: 1px solid #333; padding: 8px 15px; border-radius: 5px; cursor: pointer; }
+.srv-btn.active { background: #a6d5bf; color: #000; }
 
-.hero h1 {
-    font-size: 36px;
-    font-weight: 900;
-    margin-bottom: 20px;
-}
+/* Episode Styles */
+.season-tabs { display: flex; gap: 10px; overflow-x: auto; padding-bottom: 10px; margin-bottom: 20px; }
+.season-tab { padding: 10px 20px; background: #1a1a1a; border-radius: 5px; cursor: pointer; white-space: nowrap; }
+.season-tab.active { background: #a6d5bf; color: #000; }
+.episode-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 10px; }
+.episode-item { background: #1a1a1a; padding: 15px; border-radius: 5px; cursor: pointer; }
 
-#search-form {
-    display: flex;
-    justify-content: center;
-    max-width: 600px;
-    margin: 0 auto;
-}
+footer { text-align: center; padding: 40px; color: #444; font-size: 11px; }
 
-#search-input {
-    width: 100%;
-    padding: 15px 25px;
-    border-radius: 5px 0 0 5px;
-    border: 1px solid #333;
-    background: #1a1a1a;
-    color: white;
-    outline: none;
-}
-
-#search-form button {
-    padding: 15px 30px;
-    border-radius: 0 5px 5px 0;
-    border: none;
-    background: #616358;
-    color: white;
-    font-weight: bold;
-    cursor: pointer;
-}
-
-/* 4. HOME SECTIONS (TRENDING/LATEST) */
-.movie-section {
-    margin-bottom: 50px;
-}
-
-.section-title {
-    font-size: 22px;
-    margin-left: 5%;
-    margin-bottom: 20px;
-    color: #a6d5bf;
-    border-left: 5px solid #a6d5bf;
-    padding-left: 12px;
-}
-
-.card-row {
-    display: flex;
-    overflow-x: auto;
-    padding: 10px 5%;
-    gap: 20px;
-    scroll-behavior: smooth;
-}
-
-.card-row::-webkit-scrollbar {
-    height: 8px;
-}
-
-.card-row::-webkit-scrollbar-thumb {
-    background: #333;
-    border-radius: 10px;
-}
-
-.movie-card {
-    flex: 0 0 auto;
-    width: 180px; /* FIXED WIDTH PARA HINDI LUMAKI */
-    background: #1a1a1a;
-    border-radius: 10px;
-    overflow: hidden;
-    cursor: pointer;
-    transition: 0.3s;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.5);
-}
-
-.movie-card:hover {
-    transform: translateY(-10px);
-}
-
-.movie-card img {
-    width: 100%;
-    height: 260px;
-    object-fit: cover;
-    display: block;
-}
-
-.movie-info {
-    padding: 12px;
-    text-align: center;
-}
-
-.movie-info h3 {
-    font-size: 13px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    margin-bottom: 5px;
-}
-
-/* 5. DETAILS PAGE */
-.backdrop {
-    width: 100%;
-    height: 500px;
-    background-size: cover;
-    background-position: center;
-    position: relative;
-}
-
-.backdrop-overlay {
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(to top, #0c0c0c 10%, rgba(12,12,12,0.2));
-    display: flex;
-    align-items: flex-end;
-    padding-bottom: 40px;
-}
-
-.main-info {
-    display: flex;
-    gap: 30px;
-    align-items: flex-start;
-}
-
-#details-poster {
-    width: 200px;
-    border-radius: 10px;
-    box-shadow: 0 0 30px rgba(0,0,0,0.8);
-}
-
-.text-info h2 {
-    font-size: 42px;
-    font-weight: 900;
-}
-
-.watch-now-btn {
-    padding: 15px 40px;
-    background: #a6d5bf;
-    color: #000;
-    border: none;
-    font-weight: 900;
-    border-radius: 5px;
-    cursor: pointer;
-    margin-top: 20px;
-}
-
-/* 6. PLAYER & SERVERS */
-.watch-section {
-    padding: 50px 0;
-}
-
-.player-wrapper {
-    width: 100%;
-    aspect-ratio: 16/9;
-    background: #000;
-    border-radius: 10px;
-    overflow: hidden;
-    margin-bottom: 30px;
-}
-
-.server-switcher {
-    margin-bottom: 40px;
-    text-align: center;
-}
-
-.srv-btn {
-    background: #1a1a1a;
-    color: #ccc;
-    border: 1px solid #333;
-    padding: 10px 20px;
-    margin: 5px;
-    border-radius: 5px;
-    cursor: pointer;
-    font-weight: bold;
-}
-
-.srv-btn.active {
-    background: #a6d5bf;
-    color: #000;
-}
-
-/* 7. TV CONTROLS (SEASONS) */
-.season-tabs {
-    display: flex;
-    gap: 10px;
-    overflow-x: auto;
-    padding-bottom: 15px;
-}
-
-.season-tab {
-    padding: 10px 20px;
-    background: #1a1a1a;
-    border-radius: 5px;
-    cursor: pointer;
-    white-space: nowrap;
-}
-
-.season-tab.active {
-    background: #a6d5bf;
-    color: #000;
-}
-
-.episode-list {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-    gap: 10px;
-}
-
-.episode-item {
-    background: #1a1a1a;
-    padding: 15px;
-    border-radius: 5px;
-    cursor: pointer;
-}
-
-/* 8. FOOTER */
-footer {
-    text-align: center;
-    padding: 60px;
-    border-top: 1px solid #111;
-    color: #444;
-}
-
-/* --- 9. MOBILE RESPONSIVE FIX --- */
 @media (max-width: 768px) {
-    header { padding: 10px 3%; }
-    nav { display: none; }
-    .hero h1 { font-size: 28px; }
     .movie-card { width: 140px; }
-    .movie-card img { height: 200px; }
-    .text-info h2 { font-size: 30px; }
-    .main-info { flex-direction: column; align-items: center; text-align: center; }
+    .hero h1 { font-size: 26px; }
+    #search-input { padding: 10px; }
 }
