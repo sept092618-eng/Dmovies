@@ -6,13 +6,13 @@ let currentId = null;
 let currentType = null;
 let currentS = 1;
 let currentE = 1;
-let currentSrv = 1;
+let currentSrv = 1; // Default Server 1
 
 const homeView = document.getElementById('home-view');
 const detailsView = document.getElementById('details-view');
 const movieGrid = document.getElementById('movie-grid');
 const iframe = document.getElementById('video-iframe');
-const srvSwitcher = document.getElementById('server-switcher'); // Kunin natin ito agad
+const srvSwitcher = document.getElementById('server-switcher');
 
 getMovies(`https://api.themoviedb.org/3/trending/all/day?api_key=${API_KEY}`);
 
@@ -52,7 +52,6 @@ async function showDetails(item) {
     const playerContainer = document.getElementById('player-container');
     const tvControls = document.getElementById('tv-controls');
     
-    // GAWIN NATING Laging LALABAS ANG SERVER SWITCHER
     srvSwitcher.style.display = 'block'; 
 
     if (currentType === 'tv') {
@@ -77,13 +76,15 @@ function changeServer(srvNum) {
 
 function updatePlayer() {
     let url = "";
+    const params = "?auto_play=true&sub_f=1&ds_lang=en"; 
+
     if (currentType === 'movie') {
-        if (currentSrv === 1) url = `https://vidsrc.to/embed/movie/${currentId}`;
-        if (currentSrv === 2) url = `https://vidsrc.xyz/embed/movie/${currentId}`;
+        if (currentSrv === 1) url = `https://vidsrc.to/embed/movie/${currentId}${params}`;
+        if (currentSrv === 2) url = `https://vidsrc.xyz/embed/movie/${currentId}${params}`;
         if (currentSrv === 3) url = `https://vidsrc.me/embed/movie?tmdb=${currentId}`;
     } else {
-        if (currentSrv === 1) url = `https://vidsrc.to/embed/tv/${currentId}/${currentS}/${currentE}`;
-        if (currentSrv === 2) url = `https://vidsrc.xyz/embed/tv/${currentId}/${currentS}/${currentE}`;
+        if (currentSrv === 1) url = `https://vidsrc.to/embed/tv/${currentId}/${currentS}/${currentE}${params}`;
+        if (currentSrv === 2) url = `https://vidsrc.xyz/embed/tv/${currentId}/${currentS}/${currentE}${params}`;
         if (currentSrv === 3) url = `https://vidsrc.me/embed/tv?tmdb=${currentId}&sea=${currentS}&epi=${currentE}`;
     }
     iframe.src = url;
