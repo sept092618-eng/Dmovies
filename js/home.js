@@ -6,20 +6,34 @@ let currentId = null;
 let currentType = null;
 let currentS = 1;
 let currentE = 1;
-let currentSrv = 1; // Default Server 1
+let currentSrv = 1;
 
 const homeView = document.getElementById('home-view');
 const detailsView = document.getElementById('details-view');
 const movieGrid = document.getElementById('movie-grid');
 const iframe = document.getElementById('video-iframe');
 const srvSwitcher = document.getElementById('server-switcher');
+const searchForm = document.getElementById('search-form');
+const searchInput = document.getElementById('search-input');
 
-getMovies(`https://api.themoviedb.org/3/trending/all/day?api_key=${API_KEY}`);
+// INITIAL LOAD: I-load ang Trending, Latest Movies, at Latest TV Shows
+loadHomepageContent();
 
-async function getMovies(url) {
-    const res = await fetch(url);
-    const data = await res.json();
-    showMovies(data.results);
+async function loadHomepageContent() {
+    // 1. Trending
+    const trendingUrl = `https://api.themoviedb.org/3/trending/all/day?api_key=${API_KEY}`;
+    const trendingData = await fetch(trendingUrl).then(res => res.json());
+    
+    // 2. Latest Movies (Pumili ng 10 pinakabago)
+    const latestMovieUrl = `https://api.themoviedb.org/3/discover/movie?api_key=${API_KEY}&sort_by=release_date.desc&include_adult=false&include_video=false&page=1`;
+    const latestMovieData = await fetch(latestMovieUrl).then(res => res.json());
+    
+    // 3. Latest TV Shows (Pumili ng 10 pinakabago)
+    const latestTvUrl = `https://api.themoviedb.org/3/discover/tv?api_key=${API_KEY}&sort_by=first_air_date.desc&include_adult=false&page=1`;
+    const latestTvData = await fetch(latestTvUrl).then(res => res.json());
+    
+    // Pagsamahin lahat (para sa simplicity, trending na lang muna ang ilalabas sa main grid)
+    showMovies(trendingData.results.slice(0, 12)); // Show top 12 trending movies/shows
 }
 
 function showMovies(items) {
